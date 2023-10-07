@@ -4,6 +4,24 @@ import React, { useState } from "react";
 
 const Card = () => {
     const [flip, setFlip] = useState(0);
+    
+    const [ input, setInput ] = useState('');
+    const [ correct_answer, setCorrectAnswer ] = useState(0);
+    const [ isCardFlipped, setIsCardFlipped ] = useState(0);
+    const [ inputSubmitted, setInputSubmitted ] = useState(0);
+
+    const handleChange = () => {
+        if(isCardFlipped === true){
+            return;
+        }
+        const answerCheck = input.toLowerCase() === questionDisplayed.answer.toLowerCase();
+        setCorrectAnswer(answerCheck);
+        setInputSubmitted(true);
+    };
+
+    const nextQues = () => {
+        setInput('');
+    };
 
 
     const questions = [
@@ -13,7 +31,7 @@ const Card = () => {
             choices: [
                 'Cocaine', 'Marijuana', 'Pufferfish', 'None of the above'
             ],
-            answer: 'Pufferfish!',
+            answer: 'Pufferfish',
 
         },
         {
@@ -22,7 +40,7 @@ const Card = () => {
             choices: [
                 'African Bush Elephant', 'Bull', 'Hippo', 'Brown Bear'
             ],
-            answer: 'Brown Bear!',
+            answer: 'Brown Bear',
 
         },
         {
@@ -31,7 +49,7 @@ const Card = () => {
             choices: [
                 'Humpback Whale', 'Sperm Whale', 'Minke Whale', 'Blue Whale'
             ],
-            answer: 'Sperm Whale!',
+            answer: 'Sperm Whale',
 
         },
         {
@@ -40,7 +58,7 @@ const Card = () => {
             choices: [
                 'Snake', 'Mosquito', 'Crocodile', 'Shark'
             ],
-            answer: 'Mosquito!',
+            answer: 'Mosquito',
 
         },
         {
@@ -49,7 +67,7 @@ const Card = () => {
             choices: [
                 'Stork', 'Swan', 'Albatross', 'Condor'
             ],
-            answer: 'Albatross!',
+            answer: 'Albatross',
 
         },
         {
@@ -58,7 +76,7 @@ const Card = () => {
             choices: [
                 'Galapagos tortoise', 'Red sea urchin', 'Ocean quahog', 'Rougheye rockfish'
             ],
-            answer: 'Ocean quahog!',
+            answer: 'Ocean quahog',
 
         },
         {
@@ -67,7 +85,7 @@ const Card = () => {
             choices: [
                 'Hippo', 'Shark', 'Crocodile', 'Grizzley Bear'
             ],
-            answer: 'Hippo!',
+            answer: 'Hippo',
 
         },
         {
@@ -85,7 +103,7 @@ const Card = () => {
             choices: [
                 'Cougar', 'Alligator', 'Brown Bear', 'Wolf'
             ],
-            answer: 'Brown Bear!',
+            answer: 'Brown Bear',
 
         },
         {
@@ -94,7 +112,7 @@ const Card = () => {
             choices: [
                 'Spotted hyena', 'Silverback gorilla', 'Saltwater crocodile', 'Polar Bear'
             ],
-            answer: 'Saltwater crocodile!',
+            answer: 'Saltwater crocodile',
 
         }
     ]
@@ -118,8 +136,11 @@ const Card = () => {
         <div>
 
             <div 
-                className= {`flashcard ${flip ? 'flip' : ''}`}
-                onClick={()=> setFlip(!flip)} 
+                className= {`flashcard ${isCardFlipped ? 'flip' : ''}`}
+                onClick={()=> {
+                    setFlip(!flip);
+                    setIsCardFlipped(!isCardFlipped);                 
+                }}
             
             >
 
@@ -133,15 +154,70 @@ const Card = () => {
                     </ol>
                 </div>
                 <div className='back-card'>
-                    <h2>{questionDisplayed.answer}</h2>
+                    <h2>{questionDisplayed.answer}!</h2>
                 </div>
                 
             </div>
 
-        <button className='button' onClick={previousQuestionIndex}>Previous</button>
-        <button className='button' onClick={nextQuestionIndex}>Next</button>
-        <button className='button' onClick={randomQuestionIndex}>Random</button>
+        <button className='button' onClick={() => {nextQues(); setCorrectAnswer(false); setInputSubmitted(false); previousQuestionIndex(); }}>Previous</button>
+        <button className='button' onClick={() => {nextQues(); setCorrectAnswer(false); setInputSubmitted(false); nextQuestionIndex(); }}>Next</button>
+        <button className='button' onClick={() => {nextQues(); setCorrectAnswer(false); setInputSubmitted(false); randomQuestionIndex();}}>Random</button>
 
+     
+        
+        {/** Div containing Guess input **/}         
+        <div>
+
+            <input 
+            type="text"
+            placeholder="Enter your guess" 
+            value={input} 
+            onChange={(e) => setInput(e.target.value)}
+            />
+
+            <button className='button' onClick={() => {handleChange(); setInputSubmitted(true);}} disabled={isCardFlipped}>Submit Guess</button>
+            
+            {/** 
+            { correct_answer && (
+                <div className="answer_guess"> 
+                    <p>Your answer was correct! Good Job!</p>
+                </div>
+            )}
+
+            { !correct_answer && correct_answer !== null && input !== "" && (
+                <div className="answer_guess"> 
+                    <p>Your was incorrect! Better luck next time!</p>
+                </div>
+            ) }
+             
+             
+             
+             
+             
+             
+             **/}
+ 
+            { inputSubmitted && (
+                <div className="answer_guess"> 
+                    {correct_answer && input !== "" ? (
+                        <p>Your answer was correct! Good Job!</p>
+                    ) : (
+                        <p>Your answer was incorrect! Flip Card to reveal answer!</p>
+                    )}
+                </div> 
+            )}
+
+            { input === "" && (
+                <div className="answer_guess">
+                    <p>Input a Guess!</p>    
+                </div>
+            )}
+        </div>          
+          
+
+
+     
+       
 
         </div>
 
